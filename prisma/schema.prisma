@@ -1,0 +1,96 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  OWNER
+  EDITOR
+  COMMENTER
+  VIEWER
+}
+
+enum PageType {
+  DOC
+  BOARD
+}
+
+model User {
+  id           String         @id @default(cuid())
+  name         String
+  email        String         @unique
+  passwordHash String
+  memberships  Membership[]
+  comments     Comment[]
+  createdAt    DateTime       @default(now())
+  updatedAt    DateTime       @updatedAt
+}
+
+model Workspace {
+  id          String       @id @default(cuid())
+  name        String
+  members     Membership[]
+  pages       Page[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Membership {
+  id          String    @id @default(cuid())
+  userId      String
+  workspaceId String
+  role        Role      @default(EDITOR)
+  user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  workspace   Workspace @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  createdAt   DateTime  @default(now())
+  @@unique([userId, workspaceId])
+  @@index([workspaceId])
+}
+
+model Page {
+  id          String        @id @default(cuid())
+  title       String        @default("Untitled")
+  type        PageType      @default(DOC)
+  workspaceId String
+  workspace   Workspace     @relation(fields: [workspaceId], references: [id], onDelete: Cascade)
+  comments    Comment[]
+  versions    Version[]
+  yjsState    YjsState?
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+  @@index([workspaceId])
+}
+
+// Authoritative collaborative document state. The binary Yjs update is the source of
+// truth for page content, so a page survives client reloads and WebSocket restarts.
+model YjsState {
+  pageId    String   @id
+  state     Bytes
+  updatedAt DateTime @updatedAt
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+}
+
+model Comment {
+  id        String   @id @default(cuid())
+  body      String
+  pageId    String
+  authorId  String
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  author    User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@index([pageId, createdAt])
+}
+
+model Version {
+  id        String   @id @default(cuid())
+  pageId    String
+  snapshot  Json
+  label     String?
+  page      Page     @relation(fields: [pageId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  @@index([pageId, createdAt])
+}

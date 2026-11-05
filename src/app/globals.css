@@ -1,0 +1,106 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap');
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+:root { color-scheme: dark; }
+* { box-sizing: border-box; }
+body { margin: 0; background: #090b12; color: #e9eaf2; font-family: 'DM Sans', sans-serif; }
+button,input,textarea { font: inherit; }
+::selection { background: #7567f5; color: white; }
+.surface { background: rgba(19,22,34,.88); border: 1px solid rgba(255,255,255,.08); }
+.muted { color: #9298ad; }
+.gradient { background: linear-gradient(120deg,#8b7cff,#4ea8de); }
+
+/* Collaborative document body. Tailwind Typography is not installed, so prose
+   styles are defined here and shared by every TipTap node type. */
+.document-body {
+  padding: 1.25rem 2rem 3rem;
+  min-height: 55vh;
+  outline: none;
+  font-size: 1rem;
+  line-height: 1.75;
+  color: #d7dae6;
+}
+.document-body .ProseMirror { min-height: 55vh; outline: none; }
+.document-body h1, .document-body h2, .document-body h3 {
+  font-family: 'Manrope', sans-serif;
+  color: #fff;
+  font-weight: 700;
+  line-height: 1.25;
+  margin: 1.6rem 0 .7rem;
+}
+.document-body h1 { font-size: 1.9rem; }
+.document-body h2 { font-size: 1.5rem; }
+.document-body h3 { font-size: 1.25rem; }
+.document-body p { margin: 0 0 1rem; }
+.document-body a { color: #9db8ff; text-decoration: underline; text-underline-offset: 3px; }
+.document-body ul, .document-body ol { margin: 0 0 1rem; padding-left: 1.5rem; }
+.document-body ul { list-style: disc; }
+.document-body ol { list-style: decimal; }
+.document-body li { margin: .25rem 0; }
+.document-body li::marker { color: #6b7280; }
+.document-body blockquote {
+  border-left: 3px solid #8b7cff;
+  margin: 1.2rem 0;
+  padding: .25rem 0 .25rem 1rem;
+  color: #a9adc0;
+}
+.document-body code {
+  background: rgba(139,124,255,.14);
+  border-radius: .3rem;
+  padding: .12rem .35rem;
+  font-size: .9em;
+}
+.document-body pre {
+  background: #0b0e17;
+  border: 1px solid rgba(255,255,255,.07);
+  border-radius: .75rem;
+  margin: 1.2rem 0;
+  padding: 1rem;
+  overflow-x: auto;
+}
+.document-body pre code { background: none; padding: 0; font-size: .85rem; }
+.document-body hr { border: none; border-top: 1px solid rgba(255,255,255,.1); margin: 1.6rem 0; }
+.document-body img { max-width: 100%; border-radius: .75rem; margin: 1rem 0; }
+.document-body img.ProseMirror-selectednode { outline: 2px solid #8b7cff; }
+.document-body mark { background: rgba(255, 214, 102, .32); color: inherit; border-radius: .2rem; padding: .05rem .15rem; }
+.document-body ul[data-type="taskList"] { list-style: none; padding-left: .25rem; }
+.document-body ul[data-type="taskList"] li { display: flex; align-items: flex-start; gap: .6rem; }
+.document-body ul[data-type="taskList"] li > label { flex: 0 0 auto; margin-top: .35rem; }
+.document-body ul[data-type="taskList"] li > div { flex: 1 1 auto; }
+.document-body ul[data-type="taskList"] input[type="checkbox"] { accent-color: #8b7cff; width: 1rem; height: 1rem; }
+.document-body p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+  color: #4b5165;
+}
+
+/* Remote collaborator carets and selection tints, rendered by yCursorPlugin. */
+.collab-cursor { border-left: 2px solid var(--collab-color, #8b7cff); margin-left: -1px; position: relative; }
+.collab-cursor__label {
+  position: absolute;
+  bottom: 1.15em;
+  left: -2px;
+  background: var(--collab-color, #8b7cff);
+  color: #0b0e17;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  padding: 2px 5px;
+  border-radius: 4px 4px 4px 0;
+  white-space: nowrap;
+}
+.ProseMirror-selectednode { outline: 2px solid #8b7cff; }
+
+/* Excalidraw fills its parent, so the shell must own the height. */
+.board-shell {
+  position: relative;
+  height: calc(100vh - 260px);
+  min-height: 520px;
+}
+.board-shell .excalidraw {
+  --default-font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+  --ui-font-family: 'Manrope', ui-sans-serif, system-ui, sans-serif;
+}
